@@ -173,9 +173,12 @@
   ).then(fontCss => fontCss.filter(x => x).join(''));
 
   let cachedRules = null;
-  const styleSheetRules = () => {
+  const styleSheetRules = (options) => {
+    const {
+      styleSheets
+    } = options || {};
     if (cachedRules) return cachedRules;
-    return cachedRules = Array.from(document.styleSheets).map(sheet => {
+    return cachedRules = Array.from(styleSheets || document.styleSheets).map(sheet => {
       try {
         return {rules: sheet.cssRules, href: sheet.href};
       } catch (e) {
@@ -201,7 +204,7 @@
     const css = [];
     const detectFonts = typeof fonts === 'undefined';
     const fontList = fonts || [];
-    styleSheetRules().forEach(({rules, href}) => {
+    styleSheetRules(options).forEach(({rules, href}) => {
       if (!rules) return;
       Array.from(rules).forEach(rule => {
         if (typeof rule.style != 'undefined') {
